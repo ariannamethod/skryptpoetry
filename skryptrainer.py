@@ -7,6 +7,7 @@ from skryptloger import init_db, log_trained_file, was_trained
 
 ALLOWED_EXTENSIONS = {'.md', '.txt', '.json', '.csv'}
 
+
 class SkryptTrainer:
     """Lightweight trainer that scans directories and avoids retraining."""
 
@@ -25,7 +26,10 @@ class SkryptTrainer:
             if not directory.exists():
                 continue
             for file in directory.rglob('*'):
-                if file.suffix.lower() in ALLOWED_EXTENSIONS and file.is_file():
+                if (
+                    file.suffix.lower() in ALLOWED_EXTENSIONS
+                    and file.is_file()
+                ):
                     yield file
 
     def _train_file(self, path: Path) -> None:
@@ -45,8 +49,13 @@ class SkryptTrainer:
 
     def train_on_text(self, text: str) -> None:
         """Placeholder training on raw text."""
+        self.scan_and_train()
         # Real training would happen here.
         pass
 
     def train_on_text_async(self, text: str) -> None:
-        threading.Thread(target=self.train_on_text, args=(text,), daemon=True).start()
+        threading.Thread(
+            target=self.train_on_text,
+            args=(text,),
+            daemon=True,
+        ).start()
