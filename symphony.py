@@ -34,15 +34,27 @@ class Symphony:
         self.trainer = SkryptTrainer()
         # Asynchronous initial training on datasets
         self.trainer.train_async()
-        self.dataset_text = self.dataset_path.read_text(encoding='utf-8') if self.dataset_path.exists() else ''
+        self.dataset_text = (
+            self.dataset_path.read_text(encoding="utf-8")
+            if self.dataset_path.exists()
+            else ""
+        )
         self.user_messages: List[str] = []
 
     def _available_scripts(self) -> List[str]:
-        scripts = [line.strip() for line in self.scripts_path.read_text(encoding='utf-8').splitlines() if line.strip()]
+        scripts = [
+            line.strip()
+            for line in self.scripts_path.read_text(
+                encoding="utf-8"
+            ).splitlines()
+            if line.strip()
+        ]
         return [s for s in scripts if not script_used(s)] or scripts
 
     def _choose_script(self, message: str) -> str:
         options = self._available_scripts()
+        if not options:
+            return "No scripts available"
         best_script = options[0]
         best_score = -1.0
         for script in options:
@@ -66,6 +78,8 @@ class Symphony:
         ppl = perplexity(message)
         res = resonance(message, dataset_segment)
         script = self._choose_script(message)
+        if script == "No scripts available":
+            return script
         log_interaction(message, script, ent, ppl, res)
         return script
 
