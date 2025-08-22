@@ -1,12 +1,13 @@
 import hashlib
 import threading
 from pathlib import Path
-from typing import Callable, Iterable, Optional
+from typing import Callable, Iterable, Optional, Sequence
 
 from skryptloger import init_db, log_trained_file, was_trained
 
-ALLOWED_EXTENSIONS = {'.md', '.txt', '.json', '.csv'}
-EXCLUDED_PARTS = {'.git'}
+# Default filters for eligible training files
+ALLOWED_EXTENSIONS = {".md", ".txt", ".json", ".csv"}
+EXCLUDED_PARTS = {".git"}
 
 
 class SkryptTrainer:
@@ -16,10 +17,30 @@ class SkryptTrainer:
         self,
         datasets: Iterable[str] = (".", "datasets", "tongue"),
         model: Optional[Callable[[str], None]] = None,
+        allowed_extensions: Optional[Sequence[str]] = None,
+        excluded_parts: Optional[Sequence[str]] = None,
     ) -> None:
+        """Create a trainer.
+
+        Parameters
+        ----------
+        datasets:
+            Iterable of directory paths to scan for training files.
+        model:
+            Callable that performs training on provided text.
+        allowed_extensions:
+            File extensions eligible for training. Defaults to
+            :data:`ALLOWED_EXTENSIONS`.
+        excluded_parts:
+            Path components to ignore while scanning. Defaults to
+            :data:`EXCLUDED_PARTS`.
+        """
+
         self.dirs = [Path(p) for p in datasets]
         self._scan_lock = threading.Lock()
         self.model = model
+        self.allowed_extensions = set(allowed_extensions or ALLOWED_EXTENSIONS)
+        self.excluded_parts = set(excluded_parts or EXCLUDED_PARTS)
         init_db()
 
     def _file_hash(self, path: Path) -> str:
@@ -33,13 +54,10 @@ class SkryptTrainer:
         for directory in self.dirs:
             if not directory.exists():
                 continue
-            for file in directory.rglob('*'):
-                if any(part in EXCLUDED_PARTS for part in file.parts):
+            for file in directory.rglob("*"):
+                if any(part in self.excluded_parts for part in file.parts):
                     continue
-                if (
-                    file.suffix.lower() in ALLOWED_EXTENSIONS
-                    and file.is_file()
-                ):
+                if file.is_file() and file.suffix.lower() in self.allowed_extensions:
                     yield file
 
     def _train_text(self, text: str) -> None:
