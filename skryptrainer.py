@@ -19,7 +19,8 @@ class SkryptTrainer:
     def _file_hash(self, path: Path) -> str:
         h = hashlib.sha256()
         with open(path, 'rb') as f:
-            h.update(f.read())
+            while chunk := f.read(8192):
+                h.update(chunk)
         return h.hexdigest()
 
     def _eligible_files(self) -> Iterable[Path]:
