@@ -14,6 +14,7 @@ class SkryptTrainer:
 
     def __init__(self, datasets: Iterable[str] = ('.', 'datasets', 'tongue')):
         self.dirs = [Path(p) for p in datasets]
+        self._lock = threading.Lock()
         init_db()
 
     def _file_hash(self, path: Path) -> str:
@@ -38,21 +39,26 @@ class SkryptTrainer:
         # In real life, training data would be fed to the model here.
         pass
 
-    def scan_and_train(self) -> None:
+    def _scan_and_train(self) -> None:
         for file in self._eligible_files():
             sha = self._file_hash(file)
             if not was_trained(file, sha):
                 self._train_file(file)
                 log_trained_file(file, sha)
 
+    def scan_and_train(self) -> None:
+        with self._lock:
+            self._scan_and_train()
+
     def train_async(self) -> None:
         threading.Thread(target=self.scan_and_train, daemon=True).start()
 
     def train_on_text(self, text: str) -> None:
         """Placeholder training on raw text."""
-        self.scan_and_train()
-        # Real training would happen here.
-        pass
+        with self._lock:
+            self._scan_and_train()
+            # Real training would happen here.
+            pass
 
     def train_on_text_async(self, text: str) -> None:
         threading.Thread(target=self.train_on_text, args=(text,), daemon=True).start()
