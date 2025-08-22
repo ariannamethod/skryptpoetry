@@ -82,13 +82,23 @@ def choose_script(message: str) -> str:
 
 
 def run_script(code: str) -> str:
-    proc = subprocess.run(
-        ["python", "-c", code],
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    return proc.stdout.strip()
+    try:
+        proc = subprocess.run(
+            ["python", "-c", code],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return proc.stdout.strip()
+    except subprocess.CalledProcessError as exc:
+        _ensure_log_dir()
+        error_msg = (
+            exc.stderr
+            or exc.output
+            or f"command failed with exit code {exc.returncode}"
+        ).strip()
+        log_error(f"run_script failed: {error_msg}")
+        return error_msg
 
 
 @dataclass
