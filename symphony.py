@@ -62,7 +62,17 @@ class Symphony:
         self.user_messages: List[str] = []
 
     def _available_scripts(self) -> List[str]:
+        if not self.scripts_path.exists():
+            msg = f"Scripts file not found: {self.scripts_path}"
+            logging.warning(msg)
+            raise FileNotFoundError(msg)
+
         self.scripts_text = _load_file(self.scripts_path)
+        if not self.scripts_text.strip():
+            msg = f"Scripts file is empty: {self.scripts_path}"
+            logging.warning(msg)
+            raise ValueError(msg)
+
         scripts = [
             line.strip()
             for line in self.scripts_text.splitlines()
@@ -73,7 +83,9 @@ class Symphony:
     def _choose_script(self, message: str) -> str:
         options = self._available_scripts()
         if not options:
-            return "No scripts available"
+            msg = "No scripts available"
+            logging.warning(msg)
+            raise RuntimeError(msg)
         best_script = options[0]
         best_score = -1.0
         for script in options:
@@ -97,9 +109,10 @@ class Symphony:
         ent = entropy(message)
         ppl = perplexity(message)
         res = resonance(message, dataset_segment)
-        script = self._choose_script(message)
-        if script == "No scripts available":
-            return script
+        try:
+            script = self._choose_script(message)
+        except (FileNotFoundError, ValueError, RuntimeError) as exc:
+            return str(exc)
         log_interaction(message, script, ent, ppl, res)
         return script
 
