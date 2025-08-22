@@ -129,3 +129,45 @@ Dataset and script directories are continuously watched for changes, ensuring th
 Concurrency tests confirm that multiple threads invoking training simultaneously still result in a single pass per file, demonstrating correct locking and database usage.
 
 The modular design leaves room for future expansion of models, metrics, and training strategies while keeping the current implementation lightweight and easy to maintain.
+
+## For Developers
+
+The core engine centers on the `Symphony` orchestrator, which coordinates dataset scanning, script retrieval, metric calculation, and logging in a single loop.
+
+Training logic is handled by `SkryptTrainer`, monitoring designated directories and hashing file contents to avoid retraining on material that has already been processed.
+
+Eligible training files are filtered through configurable `allowed_extensions` and `excluded_parts`, allowing precise control over which assets contribute to learning.
+
+A thread-safe scan lock ensures that only one training pass runs at a time, preventing race conditions when multiple requests trigger concurrent scans.
+
+Asynchronous helpers such as `train_async` and `train_on_text_async` offload heavy operations so the interactive session remains responsive while background work continues.
+
+Cached file loading in `symphony.py` stores modification timestamps and contents, minimizing disk reads and stabilizing performance even as datasets grow.
+
+Context retrieval uses a Jaccard-based resonance score to select the document segment most aligned with the current query, grounding responses in relevant data.
+
+`skryptmetrics` exposes entropy, perplexity, resonance, and token-charge utilities, offering quick diagnostics for message complexity, surprise, alignment, and size.
+
+The SQLite-backed logging layer records every user message, chosen script, and metric along with timestamps, providing a complete audit trail for offline inspection.
+
+A dedicated table tracks which scripts have been used to encourage varied responses; once exhausted, the system safely reuses entries to maintain continuity.
+
+Another table stores path and hash pairs for trained files, enabling incremental learning without redundant computation when source material remains unchanged.
+
+The project targets CPU-only environments and pins PyTorch and Transformers versions in `requirements.txt`, ensuring reproducible builds without GPU dependencies.
+
+Python support focuses on CPython 3.10+ and relies solely on the standard library, keeping deployment straightforward on minimal installations.
+
+Optional C, Julia, and Java checks demonstrate multi-language toolchain compatibility, though none are required for core operation of the system.
+
+The self-contained GPT architecture in `model.py` allows developers to load pretrained weights via `from_pretrained` or train new models directly within the repository.
+
+Attention layers enforce causal masking, and optimizer configuration separates decayed from non-decayed parameters for fine-grained regularization control.
+
+High-level text generation APIs are currently absent; responses are drawn from a curated script pool rather than produced by neural decoding routines.
+
+Robust error handling emits warnings for missing files, empty datasets, or database issues and falls back to safe defaults to keep the agent running.
+
+Configuration remains minimal: dataset and script paths are supplied at `Symphony` instantiation, and extension or ignore lists may be overridden in the trainer.
+
+Future extensions can layer richer retrieval strategies, advanced metrics, or full text generation atop the existing modules without refactoring the core.
