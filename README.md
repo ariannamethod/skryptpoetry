@@ -13,6 +13,8 @@ The Symphony agent orchestrates training, metrics, and retrieval. Upon receiving
 
 Datasets stored under the `datasets` and `tongue` directories are automatically parsed whenever they change. By tracking file hashes, the trainer avoids duplicating work while still learning from any new or revised material in those locations.
 
+Supported file types and ignored path segments are configurable through the ``allowed_extensions`` and ``excluded_parts`` parameters of :class:`SkryptTrainer`.
+
 Retrieval of contextual passages is handled internally within Symphony. The agent scans available documents, measures their resonance with the query, and uses the best match to ground its response.
 
 This modular architecture allows future expansion of the model, metrics, and training routines. With the repository constantly monitored, skryptpoetry remains ready to grow alongside new data and ideas.

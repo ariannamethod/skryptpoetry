@@ -9,9 +9,9 @@ import skryptloger  # noqa: E402
 from skryptrainer import SkryptTrainer  # noqa: E402
 
 
-def _trainer(tmp_path, monkeypatch):
+def _trainer(tmp_path, monkeypatch, **kwargs):
     monkeypatch.setattr(skryptloger, "DB_PATH", tmp_path / "db.sqlite3")
-    return SkryptTrainer(datasets=[tmp_path])
+    return SkryptTrainer(datasets=[tmp_path], **kwargs)
 
 
 def test_concurrent_scan_and_train(tmp_path, monkeypatch):
@@ -36,6 +36,31 @@ def test_concurrent_scan_and_train(tmp_path, monkeypatch):
         t.join()
 
     assert calls == [tmp_path / "file.txt"]
+
+
+def test_custom_filters(tmp_path, monkeypatch):
+    trainer = _trainer(
+        tmp_path,
+        monkeypatch,
+        allowed_extensions={".xyz"},
+        excluded_parts={"skip"},
+    )
+
+    (tmp_path / "good.xyz").write_text("data")
+    (tmp_path / "bad.txt").write_text("data")
+    (tmp_path / "skip").mkdir()
+    (tmp_path / "skip" / "also.xyz").write_text("data")
+
+    calls = []
+
+    def fake_train(path):
+        calls.append(path)
+
+    monkeypatch.setattr(trainer, "_train_file", fake_train)
+
+    trainer.scan_and_train()
+
+    assert calls == [tmp_path / "good.xyz"]
 
 
 def test_scan_and_train_with_train_on_text(tmp_path, monkeypatch):
