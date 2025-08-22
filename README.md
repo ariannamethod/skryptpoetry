@@ -77,6 +77,21 @@ javac Hello.java && java Hello
 
 GPU drivers are not required and should not be installed.
 
+### Docker Image
+
+The `arianna_linux` directory provides a Dockerfile that assembles a CPU-only
+environment with build-essential, Julia, and OpenJDK preinstalled alongside the
+Python dependencies.
+
+Build the image and start the container:
+
+```bash
+docker build -t arianna-linux arianna_linux
+docker run --rm -it arianna-linux
+```
+
+No GPU libraries are included, keeping the image lightweight and portable.
+
 Skryptpoetry now centers on a lightweight training engine that continuously watches the repository for new knowledge. The trainer hashes eligible files and trains only on those it has not seen before, keeping the process efficient and adaptive to change.
 
 Each request triggers a repository scan to ensure that fresh material is incorporated before any learning happens. This approach allows the model to stay synchronized with evolving datasets without manual intervention or redundant computation.
