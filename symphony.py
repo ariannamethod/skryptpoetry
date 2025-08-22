@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple, Union
 
@@ -17,7 +18,11 @@ def _load_file(path: Path) -> str:
     cached = _CACHE.get(path)
     if cached and cached[0] == mtime:
         return cached[1]
-    text = path.read_text(encoding="utf-8")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        logging.error("_load_file: failed to read %s: %s", path, exc)
+        return ""
     _CACHE[path] = (mtime, text)
     return text
 
