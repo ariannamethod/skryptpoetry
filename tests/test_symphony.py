@@ -1,5 +1,6 @@
 import sqlite3
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -55,3 +56,27 @@ def test_respond_selects_script_and_logs(tmp_path, monkeypatch):
             "SELECT message, script FROM logs"
         ).fetchall()
     assert rows == [(message, script)]
+
+
+def test_load_file_thread_safety(tmp_path):
+    from symphony import _CACHE, _load_file
+
+    _CACHE.clear()
+    path = tmp_path / "file.txt"
+    path.write_text("a")
+
+    def call_load():
+        return _load_file(path)
+
+    with ThreadPoolExecutor(max_workers=8) as exe:
+        results = list(exe.map(lambda _: call_load(), range(100)))
+    assert all(r == "a" for r in results)
+    assert _CACHE[path][1] == "a"
+    assert len(_CACHE) == 1
+
+    path.write_text("b")
+    with ThreadPoolExecutor(max_workers=8) as exe:
+        results = list(exe.map(lambda _: call_load(), range(100)))
+    assert all(r == "b" for r in results)
+    assert _CACHE[path][1] == "b"
+    assert len(_CACHE) == 1

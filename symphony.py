@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from threading import Lock
 from typing import Dict, Iterable, List, Tuple, Union
 
 from skryptmetrics import entropy, perplexity, resonance
@@ -8,6 +9,7 @@ from skryptrainer import SkryptTrainer
 
 
 _CACHE: Dict[Path, Tuple[float, str]] = {}
+_cache_lock = Lock()
 
 
 def _load_file(path: Path) -> str:
@@ -15,15 +17,17 @@ def _load_file(path: Path) -> str:
     if not path.exists():
         return ""
     mtime = path.stat().st_mtime
-    cached = _CACHE.get(path)
-    if cached and cached[0] == mtime:
-        return cached[1]
+    with _cache_lock:
+        cached = _CACHE.get(path)
+        if cached and cached[0] == mtime:
+            return cached[1]
     try:
         text = path.read_text(encoding="utf-8")
     except OSError as exc:
         logging.error("_load_file: failed to read %s: %s", path, exc)
         return ""
-    _CACHE[path] = (mtime, text)
+    with _cache_lock:
+        _CACHE[path] = (mtime, text)
     return text
 
 
