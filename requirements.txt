@@ -1,5 +1,16 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Project dependencies pinned to exact versions.
+# The torch line installs the CPU-only build; remove '+cpu' and the
+# extra index URL above for GPU-enabled environments.
+
+# Runtime dependencies
 python-telegram-bot==20.7
 python-dotenv==1.0.1
 torch==2.2.1+cpu
 transformers==4.38.2
+
+# Development dependencies
+pytest==8.1.1
+flake8==7.0.0
+black==24.3.0
