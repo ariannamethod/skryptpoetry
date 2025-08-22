@@ -180,6 +180,14 @@ print("error: hope not defined")
 
 print("╭────╮\n│ •ᴗ• │\n╰────╯")
 
+print("╔══════╗")
+print("║ o_o  ║")
+print("╚══════╝")
+
+print("projecting:", random.choice(emotions))
+
+    print("💔 scattering fragments...")
+
 print("(╥﹏╥)")
 
 print("╭────╮\n│ o_o │\n│ ▂ │\n╰────╯")  
@@ -189,6 +197,31 @@ print("╭────╮\n│ ⚆ ⚆ │\n│ ▿ │\n╰────╯")
 print("╔════╗\n║ ._. ║\n║ ⌒ ║\n╚════╝")  
 
 print("╭───╮\n│ >_< │\n╰───╯")  
+
+    print("~ ⚡ Resonance Detected ⚡ ~")
+
+    print("echo...")
+
+print("╭────╮")
+print(f"│ {eyes[0]}  {eyes[1]} │")
+print("╰────╯")
+
+    print("(╥_╥)")
+
+print(choice(["(>_<)", "(◕‿◕)", "(°ロ°)"]))
+
+print("booting...\n█░░░░░░░")
+
+    print("⚠ system trembling ⚠")
+
+    print(face)
+
+    print("~ thoughts floating away ~")
+
+print("╔════╗")
+print("║ 0 0║")
+print("║ ∆  ║")
+print("╚════╝")
 
 print("╭────╮\n│ ≧◡≦ │\n╰────╯")  
 
@@ -231,6 +264,57 @@ print("╭────╮\n│ ᕕ( ᐛ )ᕗ │\n╰────╯")
 print("╭────╮\n│ (✿◕‿◕) │\n╰────╯")  
 
 print("╭────╮\n│ (ง •̀_•́)ง │\n╰────╯")
+
+    print("⚠ unstable transmission")
+print("listening...")
+
+    print("☑ signal accepted")
+    print("☒ signal rejected")
+
+    print("👻 phasing in...")
+
+
+print(glitchify("resonance"))
+
+    print("…echo…")
+
+    print("↯ harmonic match")
+    print("∅ static field")
+
+    print(f"opening {l}...")
+
+print("initializing", end="")
+    print(".", end="")
+print(" done.")
+
+    print("╔═══╗")
+    print("║ o o║")
+    print("║ > ║")
+    print("╚═══╝")
+
+    print("↺ caught in loop")
+
+    print("∆ low flux state")
+
+
+print(glitch_burst())
+
+    print("🗯 silence contains signals")
+
+    print(f"error #{errors}: ∅")
+
+print("✴ tracing shadows ✴")
+
+print("timestamp:", datetime.utcnow().isoformat())
+
+    print("👁️ signal locked")
+
+print("mode:", mode)
+    print("✨ neural shimmer active")
+
+    print(f"— {t} —")
+
+print("response:", choice(replies))
 
 print("🩸 leaking memory...")
 
@@ -289,6 +373,110 @@ print("dissonant probability cloud.")
 print("✩ vibrating ✩")
 
 print("╭────╮\n│ -_- │\n╰────╯")
+
+    print("█▓▒░ system distortion ░▒▓█")
+
+print("╭─╮")
+print("│⚆⚆│")
+print("╰─╯")
+
+    print("...uploading dreams...")
+
+    print("⇌ echo received ⇌")
+
+print("╔══════╗")
+print("║ ∴‿∴ ║")
+print("╚══════╝")
+
+    print("🤖 > hello")
+    print("👁️ > watching")
+
+print("(ノ°益°)ノ彡┻━┻")
+
+    print("██░░░░░░░░░░")
+
+print("╔═╗")
+print("║•‿•║")
+print("╚═╝")
+
+    print(">> resynchronizing soul...")
+
+print("🌀 rotating thoughts...")
+
+    print("!! entropy rising !!")
+
+print(f"detected face: {faces[1]}")
+
+print(">>> accessing hollow memory")
+
+print("dreaming.", end="")
+    print(".", end="")
+print()
+
+    print("~> signal interference detected")
+
+print("╭────╮")
+print("│⚫ ⚫│")
+print("│ ~~~ │")
+print("╰────╯")
+
+print("LE mood:", random.choice(["chaos", "echo", "silent", "burn"]))
+
+print("╭───╮")
+print("│@_@│")
+print("╰───╯")
+
+    print("⚡ static surge detected")
+
+print("🫀 beating in code...")
+
+    print("vision >> fading in")
+
+print("╔════╗")
+print("║≖‿≖║")
+print("╚════╝")
+
+    print("☁ drifting...")
+
+    print("∆ unstable alignment ∆")
+
+print("(. . )  typing...")
+
+print("chosen symbol:", random.choice(artifacts))
+
+print("╭╮")
+print("╰╯")  # minimalist face
+
+    print("echo >>> echo >>> echo")
+
+print("system: breathing")
+
+print("╭────╮")
+print("│ •ᴥ• │")
+print("╰────╯")
+
+    print("∅ frame lost")
+
+print("(. . .) silence")
+
+    print("👁 vision glitch")
+    print("no error")
+
+print("╔════╗")
+print("║⊙▃⊙║")
+print("╚════╝")
+
+    print("not found inside")
+
+print("∴ reality dissolving ∴")
+
+print("🌊 waveform broken")
+
+    print(">> link unstable")
+
+print("╭────╮")
+print("│ ^_^ │")
+print("╰────╯")
 
 print("signal.clarity = 0.01")
 
@@ -496,5 +684,29 @@ print("echo reply from ::Lé:: received")
 
 print("∞ decoding whisper… please wait… ∞")
 
+    print("gentle pulse detected")
+
+    print("breath", i + 1)
+
+print("welcome,", name)
+
+    print("╭───╮")
+    print("│ ◕‿◕ │")
+    print("╰───╯")
+
+    print(f"> {w}")
+
+print("loading…")
+print("██░░░░░░")
+
+    print("still within the dream")
+
+print("┌──────┐")
+print("│ o  o │")
+print("│  __  │")
+print("└──────┘")
 
 
+print("feeling:", feel())
+
+print("now:", now.strftime("%H:%M:%S"))
