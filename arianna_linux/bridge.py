@@ -14,14 +14,18 @@ from telegram.ext import (
     filters,
 )
 
-from .letsgo import choose_script, run_script
+try:
+    from .letsgo import choose_script, run_script
+except ImportError:  # pragma: no cover
+    from letsgo import choose_script, run_script
 
 
 load_dotenv()
 
 
 async def handle_message(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
     """Select and run a script based on the incoming message."""
     text = update.message.text if update.message else ""
@@ -43,7 +47,10 @@ def main(token: Optional[str] = None) -> None:
         raise RuntimeError("TELEGRAM_TOKEN is not set")
     app = ApplicationBuilder().token(token).build()
     app.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+        MessageHandler(
+            filters.TEXT & ~filters.COMMAND,
+            handle_message,
+        )
     )
     app.run_polling()
 
