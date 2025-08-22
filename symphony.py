@@ -1,10 +1,25 @@
 from pathlib import Path
-from typing import List
+from typing import Iterable, List
 
 from skryptmetrics import entropy, perplexity, resonance
 from skryptloger import init_db, log_interaction, script_used
 from skryptrainer import SkryptTrainer
-from rag import retrieve
+
+
+def retrieve(query: str, documents: Iterable[Path]) -> str:
+    """Return the document text that resonates most with the query."""
+    best_text = ""
+    best_score = -1.0
+    for path in documents:
+        try:
+            text = Path(path).read_text(encoding='utf-8')
+        except FileNotFoundError:
+            continue
+        score = resonance(query, text)
+        if score > best_score:
+            best_score = score
+            best_text = text
+    return best_text
 
 
 class Symphony:
@@ -38,6 +53,7 @@ class Symphony:
         return best_script
 
     def respond(self, message: str) -> str:
+        self.trainer.scan_and_train()
         self.user_messages.append(message)
         total_size = sum(len(m) for m in self.user_messages)
         if total_size > 5000:
