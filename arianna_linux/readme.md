@@ -10,6 +10,10 @@ Future development of the robot aims to expand its capabilities: we plan to add 
 
 **Contributors and any form of collaboration are warmly welcomed.**
 
+### Dependencies
+
+Install Python packages with `pip install -r requirements.txt`. Development and testing tools live in the repository's `dev-requirements.txt`.
+
 ---
 
 ## Key Features
