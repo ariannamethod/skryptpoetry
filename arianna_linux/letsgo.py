@@ -25,6 +25,8 @@ from typing import (
 from dataclasses import dataclass, asdict
 import re
 import shutil
+import subprocess
+import hashlib
 
 _NO_COLOR_FLAG = "--no-color"
 USE_COLOR = (
@@ -48,6 +50,45 @@ except importlib_metadata.PackageNotFoundError:
 # Configuration
 DATA_DIR = Path.home() / ".letsgo"
 CONFIG_PATH = DATA_DIR / "config"
+
+
+SCRIPTS_PATH = Path(__file__).resolve().parents[1] / "tongue" / "prelanguage.md"
+
+
+def _load_scripts(path: Path = SCRIPTS_PATH) -> list[str]:
+    scripts: list[str] = []
+    current: list[str] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped:
+            if current:
+                scripts.append("\n".join(current))
+                current = []
+            continue
+        if stripped.startswith("#"):
+            continue
+        current.append(stripped)
+    if current:
+        scripts.append("\n".join(current))
+    return scripts
+
+
+SCRIPTS = _load_scripts()
+
+
+def choose_script(message: str) -> str:
+    idx = int(hashlib.sha256(message.encode()).hexdigest(), 16) % len(SCRIPTS)
+    return SCRIPTS[idx]
+
+
+def run_script(code: str) -> str:
+    proc = subprocess.run(
+        ["python", "-c", code],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return proc.stdout.strip()
 
 
 @dataclass
