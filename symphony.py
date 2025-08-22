@@ -1,20 +1,38 @@
 from pathlib import Path
-from typing import Iterable, List
+from typing import Dict, Iterable, List, Tuple, Union
 
 from skryptmetrics import entropy, perplexity, resonance
 from skryptloger import init_db, log_interaction, script_used
 from skryptrainer import SkryptTrainer
 
 
-def retrieve(query: str, documents: Iterable[Path]) -> str:
+_CACHE: Dict[Path, Tuple[float, str]] = {}
+
+
+def _load_file(path: Path) -> str:
+    """Return cached file contents, refreshing only when changed."""
+    if not path.exists():
+        return ""
+    mtime = path.stat().st_mtime
+    cached = _CACHE.get(path)
+    if cached and cached[0] == mtime:
+        return cached[1]
+    text = path.read_text(encoding="utf-8")
+    _CACHE[path] = (mtime, text)
+    return text
+
+
+def retrieve(query: str, documents: Iterable[Union[Path, str]]) -> str:
     """Return the document text that resonates most with the query."""
     best_text = ""
     best_score = -1.0
-    for path in documents:
-        try:
-            text = Path(path).read_text(encoding='utf-8')
-        except FileNotFoundError:
-            continue
+    for doc in documents:
+        if isinstance(doc, Path):
+            text = _load_file(doc)
+            if not text:
+                continue
+        else:
+            text = doc
         score = resonance(query, text)
         if score > best_score:
             best_score = score
@@ -34,19 +52,15 @@ class Symphony:
         self.trainer = SkryptTrainer()
         # Asynchronous initial training on datasets
         self.trainer.train_async()
-        self.dataset_text = (
-            self.dataset_path.read_text(encoding="utf-8")
-            if self.dataset_path.exists()
-            else ""
-        )
+        self.dataset_text = _load_file(self.dataset_path)
+        self.scripts_text = _load_file(self.scripts_path)
         self.user_messages: List[str] = []
 
     def _available_scripts(self) -> List[str]:
+        self.scripts_text = _load_file(self.scripts_path)
         scripts = [
             line.strip()
-            for line in self.scripts_path.read_text(
-                encoding="utf-8"
-            ).splitlines()
+            for line in self.scripts_text.splitlines()
             if line.strip()
         ]
         return [s for s in scripts if not script_used(s)] or scripts
@@ -73,7 +87,8 @@ class Symphony:
             self.user_messages.clear()
 
         # Metrics against dataset
-        dataset_segment = retrieve(message, [self.dataset_path])
+        self.dataset_text = _load_file(self.dataset_path)
+        dataset_segment = retrieve(message, [self.dataset_text])
         ent = entropy(message)
         ppl = perplexity(message)
         res = resonance(message, dataset_segment)
