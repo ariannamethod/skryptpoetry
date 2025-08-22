@@ -6,11 +6,13 @@ from typing import Iterable
 from skryptloger import init_db, log_trained_file, was_trained
 
 ALLOWED_EXTENSIONS = {'.md', '.txt', '.json', '.csv'}
+EXCLUDED_PARTS = {'.git'}
+
 
 class SkryptTrainer:
     """Lightweight trainer that scans directories and avoids retraining."""
 
-    def __init__(self, datasets: Iterable[str] = ('datasets', 'tongue')):
+    def __init__(self, datasets: Iterable[str] = ('.', 'datasets', 'tongue')):
         self.dirs = [Path(p) for p in datasets]
         init_db()
 
@@ -25,6 +27,8 @@ class SkryptTrainer:
             if not directory.exists():
                 continue
             for file in directory.rglob('*'):
+                if any(part in EXCLUDED_PARTS for part in file.parts):
+                    continue
                 if file.suffix.lower() in ALLOWED_EXTENSIONS and file.is_file():
                     yield file
 
@@ -45,6 +49,7 @@ class SkryptTrainer:
 
     def train_on_text(self, text: str) -> None:
         """Placeholder training on raw text."""
+        self.scan_and_train()
         # Real training would happen here.
         pass
 
