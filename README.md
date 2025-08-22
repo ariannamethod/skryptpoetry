@@ -7,34 +7,72 @@ Runtime packages are pinned in `requirements.txt` and `arianna_linux/requirement
 
 ### Installation
 
-Install the Python dependencies:
+#### Python dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-For CPU-only usage, install the PyTorch CPU wheel:
+Use the CPU-only wheels to avoid pulling in CUDA libraries:
 
 ```bash
 pip install torch --index-url https://download.pytorch.org/whl/cpu
+export CUDA_VISIBLE_DEVICES=""  # ensure no GPUs are visible
 ```
 
-Install a C compiler, Julia, and Java (OpenJDK):
+#### C compiler (GCC/Clang)
 
 ```bash
-sudo apt-get install build-essential     # for gcc
+sudo apt-get update
+sudo apt-get install build-essential     # provides gcc
 # sudo apt-get install clang             # optional alternative
+```
+
+#### Julia
+
+```bash
 sudo apt-get install julia
+```
+
+#### Java (OpenJDK)
+
+```bash
 sudo apt-get install openjdk-17-jdk
 ```
 
-Verify your environment:
+### Verification
 
 ```bash
 python --version
 gcc --version          # or clang --version
 julia --version
 java -version
+```
+
+### Testing
+
+Run the existing Python test suite:
+
+```bash
+pytest
+```
+
+Check that each language toolchain builds and runs a trivial program:
+
+```bash
+# C
+echo 'int main(){return 0;}' > hello.c
+gcc hello.c -o hello && ./hello
+
+# Julia
+echo 'println("hello")' > hello.jl
+julia hello.jl
+
+# Java
+cat <<'EOF' > Hello.java
+public class Hello { public static void main(String[] args){ System.out.println("hello"); } }
+EOF
+javac Hello.java && java Hello
 ```
 
 GPU drivers are not required and should not be installed.
