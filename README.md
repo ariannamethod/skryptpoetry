@@ -5,6 +5,40 @@ Transformer-type translator from human language to the language of skrypts.
 
 Runtime packages are pinned in `requirements.txt` and `arianna_linux/requirements.txt`. Development and testing tools live in `dev-requirements.txt`.
 
+### Installation
+
+Install the Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+For CPU-only usage, install the PyTorch CPU wheel:
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+```
+
+Install a C compiler, Julia, and Java (OpenJDK):
+
+```bash
+sudo apt-get install build-essential     # for gcc
+# sudo apt-get install clang             # optional alternative
+sudo apt-get install julia
+sudo apt-get install openjdk-17-jdk
+```
+
+Verify your environment:
+
+```bash
+python --version
+gcc --version          # or clang --version
+julia --version
+java -version
+```
+
+GPU drivers are not required and should not be installed.
+
 Skryptpoetry now centers on a lightweight training engine that continuously watches the repository for new knowledge. The trainer hashes eligible files and trains only on those it has not seen before, keeping the process efficient and adaptive to change.
 
 Each request triggers a repository scan to ensure that fresh material is incorporated before any learning happens. This approach allows the model to stay synchronized with evolving datasets without manual intervention or redundant computation.
