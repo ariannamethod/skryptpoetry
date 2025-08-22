@@ -10,7 +10,7 @@ ALLOWED_EXTENSIONS = {'.md', '.txt', '.json', '.csv'}
 class SkryptTrainer:
     """Lightweight trainer that scans directories and avoids retraining."""
 
-    def __init__(self, datasets: Iterable[str] = ('datasets', 'tongue')):
+    def __init__(self, datasets: Iterable[str] = ('.', 'datasets', 'tongue')):
         self.dirs = [Path(p) for p in datasets]
         init_db()
 
@@ -45,6 +45,8 @@ class SkryptTrainer:
 
     def train_on_text(self, text: str) -> None:
         """Placeholder training on raw text."""
+        # Scan repository for newly added files before training
+        self.scan_and_train()
         # Real training would happen here.
         pass
 
