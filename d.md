@@ -1,4 +1,4 @@
-TRIPD Acceptable Use Directive
+## TRIPD Acceptable Use Directive
 
 Version 1.0 — mandatory for all TRIPD / Arianna Method integrations
 
